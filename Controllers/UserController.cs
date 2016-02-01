@@ -1,51 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
-using System.Data;
-using System.Data.SqlClient;
 using WebApplication4.Models;
-
+using System.Data.SqlClient;
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebApplication4.Controllers
 {
     [Route("api/[controller]")]
-    public class ProjectMasterController : Controller
+    public class UserController : Controller
     {
         // GET: api/values
         [HttpGet]
-        public IEnumerable<WebApplication4.Models.tblProject_Master> Get()
+        public IEnumerable<string> Get()
         {
-            return new tblProject_Master[] { };
+            return new string[] { "value1", "value2" };
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public tblProject_Master Get(int id)
+        // GET api/values/nitin?&passWord=abc
+        [HttpGet("{userName}")]
+        //[HttpPost]
+        public tbl_User Get(string userName,string passWord)
         {
-            //return new tblProject_Master();
             SqlDataReader reader = null;
             SqlConnection myConnection = new SqlConnection();
-         //   myConnection.ConnectionString = System.Configuration.Abstractions.ConfigurationManager.AppSettings["MyAppSetting"];
             myConnection.ConnectionString = @"Data Source=192.168.0.110;Initial Catalog=TTSHTemp;User ID=sa;Password=ROOT#123";
             SqlCommand sqlCmd = new SqlCommand();
             //sqlCmd.CommandType = CommandType.Text;
-            sqlCmd.CommandText = "Select Top 1 * from tblProject_Master where i_Id=" + id + "";
+            sqlCmd.CommandText =string.Format("Select Top 1 * from tbl_User where userName='{0}' and PassWord='{1}'",userName,passWord);
             sqlCmd.Connection = myConnection;
             myConnection.Open();
             reader = sqlCmd.ExecuteReader();
-            tblProject_Master project_Master = null;
+            tbl_User user = null;
             while (reader.Read())
             {
-                project_Master = new tblProject_Master();
-                project_Master.i_ID= Int32.Parse(reader.GetValue(0).ToString());
-                project_Master.s_Display_Project_ID = reader.GetValue(1).ToString();
-                project_Master.s_Project_Title = reader.GetValue(2).ToString(); ;
-                project_Master.s_Short_Title = reader.GetValue(3).ToString();
+                user = new tbl_User();
+                user.ID = Int32.Parse(reader.GetValue(0).ToString());
+                user.UserName = userName;
+                user.PassWord = passWord;   
             }
             myConnection.Close();
-            return project_Master;
-
+            return user;
         }
 
         // POST api/values
