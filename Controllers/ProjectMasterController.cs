@@ -16,7 +16,45 @@ namespace WebApplication4.Controllers
         [HttpGet]
         public IEnumerable<WebApplication4.Models.tblProject_Master> Get()
         {
-            return new tblProject_Master[] { };
+            List<tblProject_Master> pm = new List<tblProject_Master>();
+
+            try
+            {
+                SqlDataReader reader = null;
+                SqlConnection myConnection = new SqlConnection();
+                myConnection.ConnectionString = @"Data Source=192.168.0.110;Initial Catalog=TTSHTemp;User ID=sa;Password=ROOT#123";
+                SqlCommand sqlCmd = new SqlCommand();
+                sqlCmd.CommandType = System.Data.CommandType.StoredProcedure;
+                sqlCmd.CommandText = "spProjectMasterDML";
+                sqlCmd.Parameters.Add("@StatementType", SqlDbType.VarChar);
+                sqlCmd.Parameters["@StatementType"].Value= "select";
+                sqlCmd.Connection = myConnection;
+                myConnection.Open();
+
+                reader = sqlCmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    pm.Add(new tblProject_Master
+                    {
+                        i_ID = Convert.ToInt32(reader["i_ID"]),
+                        s_Display_Project_ID = Convert.ToString(reader["s_Display_Project_ID"]),
+                        s_Project_Title = Convert.ToString(reader["s_Project_Title"]),
+                        Project_Category_Name = Convert.ToString(reader["Project_Category_Name"]),
+                        s_IRB_No = Convert.ToString(reader["s_IRB_No"]),
+                        Project_Type = Convert.ToString(reader["Project_Type"]),
+                        PI_NAME = Convert.ToString(reader["PI_NAME"]),
+                        s_CreatedBy_ID = Convert.ToString(reader["s_CreatedBy_ID"])
+
+                    });
+                }
+            }
+            catch (Exception)
+            {
+
+
+            }
+
+            return pm;
         }
 
         // GET api/values/5

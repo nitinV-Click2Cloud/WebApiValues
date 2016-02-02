@@ -145,6 +145,9 @@ namespace WebApplication4.Models
             get;
             set;
         }
-
+        public string Project_Category_Name { get; set; }
+        public string Project_Type { get; set; }
+     
+        public string PI_NAME { get; set; }
     }
 }

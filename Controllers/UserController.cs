@@ -39,7 +39,7 @@ namespace WebApplication4.Controllers
                 user = new tbl_User();
                 user.ID = Int32.Parse(reader.GetValue(0).ToString());
                 user.UserName = userName;
-                user.PassWord = passWord;   
+                user.Guid = reader.GetValue(3).ToString();
             }
             myConnection.Close();
             return user;

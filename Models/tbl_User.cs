@@ -25,5 +25,10 @@ namespace WebApplication4.Models
             get;
             set;
         }
+        public string Guid
+        {
+            get;
+            set;
+        }
     }
 }
