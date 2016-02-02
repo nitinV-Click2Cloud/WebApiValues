@@ -13,11 +13,11 @@ namespace WebApplication4.Controllers
     public class UserController : Controller
     {
         // GET: api/values
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        //[HttpGet]
+        //public IEnumerable<string> Get()
+        //{
+        //    return new string[] { "value1", "value2" };
+        //}
 
         // GET api/values/nitin?&passWord=abc
         [HttpGet("{userName}")]
@@ -43,6 +43,36 @@ namespace WebApplication4.Controllers
             }
             myConnection.Close();
             return user;
+        }
+
+        //[ActionName("GetMenus")]
+        [HttpGet]
+        public List<AdUserDetail> GetMenus()
+        {
+
+            SqlDataReader reader = null;
+            SqlConnection myConnection = new SqlConnection();
+            myConnection.ConnectionString = @"Data Source=192.168.0.110;Initial Catalog=TTSHTemp;User ID=sa;Password=ROOT#123";
+            SqlCommand sqlCmd = new SqlCommand();
+            sqlCmd.CommandType = System.Data.CommandType.StoredProcedure;
+            sqlCmd.CommandText = "SpGetMenuItems"; 
+            sqlCmd.Connection = myConnection;
+            myConnection.Open();
+           
+            reader = sqlCmd.ExecuteReader();
+            List<AdUserDetail> menus = new List<AdUserDetail>();
+            while (reader.Read())
+            {
+                menus.Add(new AdUserDetail { 
+                  MenuId = (string.IsNullOrEmpty(reader["MenuId"].ToString())? 0 : Convert.ToInt32(reader["MenuId"])),
+                          MenuName = (string.IsNullOrEmpty(reader["MenuName"].ToString())) ? "" :reader["MenuName"].ToString(),
+                    Parent = (string.IsNullOrEmpty(reader["Parent"].ToString()) ? 0 : Convert.ToInt32(reader["Parent"])),
+                         Child = (string.IsNullOrEmpty(reader["Child"].ToString()) ? 0 : Convert.ToInt32(reader["Child"])),
+                            Url = (string.IsNullOrEmpty(reader["Url"].ToString())) ? "" : reader["Url"].ToString()
+                });
+            }
+            myConnection.Close();
+            return menus;
         }
 
         // POST api/values
