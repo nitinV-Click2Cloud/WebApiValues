@@ -145,9 +145,11 @@ namespace WebApplication4.Models
             get;
             set;
         }
+        public string Project_StartDate { get; set; }
         public string Project_Category_Name { get; set; }
         public string Project_Type { get; set; }
-     
+        public int i_ProjectStatus { get; set; }
+        public string Dt_ProjectEndDate { get; set; }
         public string PI_NAME { get; set; }
     }
 }
