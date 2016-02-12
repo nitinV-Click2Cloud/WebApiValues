@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using WebApplication4.Models;
 using System.Data.SqlClient;
@@ -75,9 +75,47 @@ namespace WebApplication4.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public PI_Master Get(int id)
         {
-            return "value";
+            string result = string.Empty;
+            SqlDataReader reader = null;
+            PI_Master mas = new PI_Master();
+            SqlConnection myConnection = new SqlConnection();
+            myConnection.ConnectionString = @"Data Source=192.168.0.110;Initial Catalog=TTSHTemp;User ID=sa;Password=ROOT#123";
+            SqlCommand sqlCmd = new SqlCommand();
+            sqlCmd.CommandType = System.Data.CommandType.StoredProcedure;
+            sqlCmd.CommandText = "spPI_MasterDML";
+            sqlCmd.Connection = myConnection;
+            myConnection.Open();
+
+            sqlCmd.Parameters.Add("@StatementType", SqlDbType.VarChar);
+            sqlCmd.Parameters["@StatementType"].Value = "Select";
+
+
+            sqlCmd.Parameters.Add("@i_ID", SqlDbType.Int);
+            sqlCmd.Parameters["@i_ID"].Value = id;
+
+           
+            sqlCmd.Parameters.Add("@Ret_Parameter", SqlDbType.VarChar);
+            sqlCmd.Parameters["@Ret_Parameter"].Size = 500;
+            sqlCmd.Parameters["@Ret_Parameter"].Direction = ParameterDirection.Output;
+            reader =sqlCmd.ExecuteReader();
+            while (reader.Read())
+            {
+                mas.s_Email = reader.GetValue(4).ToString();
+                mas.s_Phone_no = reader.GetValue(5).ToString();
+                mas.s_MCR_No = reader.GetValue(6).ToString();
+            }
+            //if (string.IsNullOrEmpty(sqlCmd.Parameters[sqlCmd.Parameters.Count - 1].Value.ToString()))
+            //{
+            //    result = "Success" + " | " + sqlCmd.Parameters[sqlCmd.Parameters.Count - 1].Value.ToString();
+            //    mas.s_Email=
+            //}
+            //else
+            //{
+            //    result = sqlCmd.Parameters[sqlCmd.Parameters.Count - 1].Value.ToString();
+            //}
+            return mas;
         }
 
         // POST api/values
